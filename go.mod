@@ -1,4 +1,4 @@
-module Init
+module Sparkle
 
 go 1.14
 

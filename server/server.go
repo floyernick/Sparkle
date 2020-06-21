@@ -3,12 +3,12 @@ package server
 import (
 	"net/http"
 
-	"Init/config"
-	"Init/database"
-	"Init/notes"
+	"Sparkle/config"
+	"Sparkle/database"
+	"Sparkle/notes"
 )
 
-func Init(config config.ServerConfig, db database.DB) error {
+func Sparkle(config config.ServerConfig, db database.DB) error {
 
 	mux := http.NewServeMux()
 	notes.RegisterRoutes(mux, db)

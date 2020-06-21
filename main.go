@@ -3,10 +3,10 @@ package main
 import (
 	"flag"
 
-	"Init/config"
-	"Init/database"
-	"Init/server"
-	"Init/tools/logger"
+	"Sparkle/config"
+	"Sparkle/database"
+	"Sparkle/server"
+	"Sparkle/tools/logger"
 )
 
 func main() {
@@ -19,13 +19,13 @@ func main() {
 		logger.Error(err)
 	}
 
-	db, err := database.Init(cfg.Database)
+	db, err := database.Sparkle(cfg.Database)
 
 	if err != nil {
 		logger.Error(err)
 	}
 
-	err = server.Init(cfg.Server, db)
+	err = server.Sparkle(cfg.Server, db)
 
 	if err != nil {
 		logger.Error(err)

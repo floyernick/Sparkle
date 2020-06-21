@@ -3,8 +3,8 @@ package database
 import (
 	"database/sql"
 
-	"Init/entities"
-	"Init/tools/logger"
+	"Sparkle/entities"
+	"Sparkle/tools/logger"
 )
 
 func (db DB) GetUserByBuilder(builder queryBuilder) (entities.User, error) {

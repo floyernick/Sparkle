@@ -5,7 +5,7 @@ import (
 
 	_ "github.com/lib/pq"
 
-	"Init/config"
+	"Sparkle/config"
 )
 
 type DB struct {
@@ -26,7 +26,7 @@ func (db DB) performer() Performer {
 	return db.pool
 }
 
-func Init(config config.DatabaseConfig) (DB, error) {
+func Sparkle(config config.DatabaseConfig) (DB, error) {
 
 	var db DB
 

@@ -1,7 +1,7 @@
 package database
 
 import (
-	"Init/tools/logger"
+	"Sparkle/tools/logger"
 )
 
 func (db *DB) Transaction() error {

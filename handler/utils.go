@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"Init/app/errors"
+	"Sparkle/app/errors"
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
