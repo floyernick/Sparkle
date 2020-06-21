@@ -5,14 +5,10 @@ import (
 )
 
 func (db DB) GetBuilder() queryBuilder {
-	builder := queryBuilder{
-		db: db,
-	}
-	return builder
+	return queryBuilder{}
 }
 
 type queryBuilder struct {
-	db             DB
 	clause         string
 	params         []interface{}
 	offset         *int
