@@ -9,12 +9,12 @@ import (
 
 func (db DB) GetUserByBuilder(builder queryBuilder) (entities.User, error) {
 
-	query := "SELECT id, username, password FROM users"
+	query := "SELECT id, username, password, access_token FROM users"
 	query = builder.formatQuery(query)
 
 	var user entities.User
 
-	err := db.performer().QueryRow(query, builder.params...).Scan(&user.Id, &user.Username, &user.Password)
+	err := db.performer().QueryRow(query, builder.params...).Scan(&user.Id, &user.Username, &user.Password, &user.AccessToken)
 
 	if err != nil && err != sql.ErrNoRows {
 		if db.tx != nil {
@@ -29,7 +29,7 @@ func (db DB) GetUserByBuilder(builder queryBuilder) (entities.User, error) {
 
 func (db DB) GetUsersByBuilder(builder queryBuilder) ([]entities.User, error) {
 
-	query := "SELECT id, username, password FROM users"
+	query := "SELECT id, username, password, access_token FROM users"
 	query = builder.formatQuery(query)
 
 	var users []entities.User
@@ -63,11 +63,11 @@ func (db DB) GetUsersByBuilder(builder queryBuilder) ([]entities.User, error) {
 
 func (db DB) CreateUser(user entities.User) (int, error) {
 
-	query := "INSERT INTO users(id, username, password) VALUES($1, $2, $3) RETURNING id"
+	query := "INSERT INTO users(username, password, access_token) VALUES($1, $2, $3) RETURNING id"
 
 	var id int
 
-	err := db.performer().QueryRow(query, user.Id, user.Username, user.Password).Scan(&id)
+	err := db.performer().QueryRow(query, user.Username, user.Password, user.AccessToken).Scan(&id)
 
 	if err != nil {
 		if db.tx != nil {
@@ -82,9 +82,9 @@ func (db DB) CreateUser(user entities.User) (int, error) {
 
 func (db DB) UpdateUser(user entities.User) error {
 
-	query := "UPDATE users SET username = $2, password = $3 WHERE id = $1"
+	query := "UPDATE users SET username = $2, password = $3, access_token = $4 WHERE id = $1"
 
-	_, err := db.performer().Exec(query, user.Id, user.Username, user.Password)
+	_, err := db.performer().Exec(query, user.Id, user.Username, user.Password, user.AccessToken)
 
 	if err != nil {
 		if db.tx != nil {
@@ -114,7 +114,12 @@ func (db DB) DeleteUser(user entities.User) error {
 	return nil
 }
 
-func (db DB) GetUserById(id string) (entities.User, error) {
-	builder := db.GetBuilder().Equals("id", id)
+func (db DB) GetUserByAccessToken(token string) (entities.User, error) {
+	builder := db.GetBuilder().Equals("access_token", token)
+	return db.GetUserByBuilder(builder)
+}
+
+func (db DB) GetUserByUsername(username string) (entities.User, error) {
+	builder := db.GetBuilder().Equals("username", username)
 	return db.GetUserByBuilder(builder)
 }

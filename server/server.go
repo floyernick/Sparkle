@@ -5,13 +5,13 @@ import (
 
 	"Sparkle/config"
 	"Sparkle/database"
-	"Sparkle/notes"
+	"Sparkle/users"
 )
 
 func Sparkle(config config.ServerConfig, db database.DB) error {
 
 	mux := http.NewServeMux()
-	notes.RegisterRoutes(mux, db)
+	users.RegisterRoutes(mux, db)
 
 	server := &http.Server{
 		Addr:         config.Port,
