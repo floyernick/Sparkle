@@ -26,7 +26,7 @@ func (db DB) performer() Performer {
 	return db.pool
 }
 
-func Sparkle(config config.DatabaseConfig) (DB, error) {
+func Init(config config.DatabaseConfig) (DB, error) {
 
 	var db DB
 

@@ -8,7 +8,7 @@ import (
 	"Sparkle/users"
 )
 
-func Sparkle(config config.ServerConfig, db database.DB) error {
+func Init(config config.ServerConfig, db database.DB) error {
 
 	mux := http.NewServeMux()
 	users.RegisterRoutes(mux, db)

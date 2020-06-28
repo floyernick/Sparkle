@@ -7,6 +7,59 @@ import (
 	"Sparkle/tools/logger"
 )
 
+func (db DB) CreateUser(user entities.User) (int, error) {
+
+	query := "INSERT INTO users(username, password, access_token) VALUES($1, $2, $3) RETURNING id"
+
+	var id int
+
+	err := db.performer().QueryRow(query, user.Username, user.Password, user.AccessToken).Scan(&id)
+
+	if err != nil {
+		if db.tx != nil {
+			db.tx.Rollback()
+		}
+		logger.Warning(err)
+		return id, err
+	}
+
+	return id, nil
+}
+
+func (db DB) UpdateUser(user entities.User) error {
+
+	query := "UPDATE users SET username = $2, password = $3, access_token = $4 WHERE id = $1"
+
+	_, err := db.performer().Exec(query, user.Id, user.Username, user.Password, user.AccessToken)
+
+	if err != nil {
+		if db.tx != nil {
+			db.tx.Rollback()
+		}
+		logger.Warning(err)
+		return err
+	}
+
+	return nil
+}
+
+func (db DB) DeleteUser(user entities.User) error {
+
+	query := "DELETE FROM users WHERE id = $1"
+
+	_, err := db.performer().Exec(query, user.Id)
+
+	if err != nil {
+		if db.tx != nil {
+			db.tx.Rollback()
+		}
+		logger.Warning(err)
+		return err
+	}
+
+	return nil
+}
+
 func (db DB) GetUserByBuilder(builder queryBuilder) (entities.User, error) {
 
 	query := "SELECT id, username, password, access_token FROM users"
@@ -59,59 +112,6 @@ func (db DB) GetUsersByBuilder(builder queryBuilder) ([]entities.User, error) {
 	}
 
 	return users, nil
-}
-
-func (db DB) CreateUser(user entities.User) (int, error) {
-
-	query := "INSERT INTO users(username, password, access_token) VALUES($1, $2, $3) RETURNING id"
-
-	var id int
-
-	err := db.performer().QueryRow(query, user.Username, user.Password, user.AccessToken).Scan(&id)
-
-	if err != nil {
-		if db.tx != nil {
-			db.tx.Rollback()
-		}
-		logger.Warning(err)
-		return id, err
-	}
-
-	return id, nil
-}
-
-func (db DB) UpdateUser(user entities.User) error {
-
-	query := "UPDATE users SET username = $2, password = $3, access_token = $4 WHERE id = $1"
-
-	_, err := db.performer().Exec(query, user.Id, user.Username, user.Password, user.AccessToken)
-
-	if err != nil {
-		if db.tx != nil {
-			db.tx.Rollback()
-		}
-		logger.Warning(err)
-		return err
-	}
-
-	return nil
-}
-
-func (db DB) DeleteUser(user entities.User) error {
-
-	query := "DELETE FROM users WHERE id = $1"
-
-	_, err := db.performer().Exec(query, user.Id)
-
-	if err != nil {
-		if db.tx != nil {
-			db.tx.Rollback()
-		}
-		logger.Warning(err)
-		return err
-	}
-
-	return nil
 }
 
 func (db DB) GetUserByAccessToken(token string) (entities.User, error) {

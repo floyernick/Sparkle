@@ -1,8 +1,6 @@
 package main
 
 import (
-	"flag"
-
 	"Sparkle/config"
 	"Sparkle/database"
 	"Sparkle/server"
@@ -11,21 +9,19 @@ import (
 
 func main() {
 
-	flag.Parse()
-
 	cfg, err := config.LoadConfig()
 
 	if err != nil {
 		logger.Error(err)
 	}
 
-	db, err := database.Sparkle(cfg.Database)
+	db, err := database.Init(cfg.Database)
 
 	if err != nil {
 		logger.Error(err)
 	}
 
-	err = server.Sparkle(cfg.Server, db)
+	err = server.Init(cfg.Server, db)
 
 	if err != nil {
 		logger.Error(err)
