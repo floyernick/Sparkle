@@ -4,6 +4,7 @@ go 1.14
 
 require (
 	github.com/go-playground/universal-translator v0.17.0 // indirect
+	github.com/google/open-location-code/go v0.0.0-20200603075809-e28188e71340
 	github.com/google/uuid v1.1.1
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/leodido/go-urn v1.2.0 // indirect
