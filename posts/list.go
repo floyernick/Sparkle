@@ -24,10 +24,11 @@ type PostsListResponse struct {
 }
 
 type PostsListResponsePost struct {
-	Id        int                       `json:"id"`
-	Text      string                    `json:"text"`
-	CreatedAt string                    `json:"created_at"`
-	User      PostsListResponsePostUser `json:"user"`
+	Id          int                       `json:"id"`
+	Text        string                    `json:"text"`
+	CreatedAt   string                    `json:"created_at"`
+	LikesNumber int                       `json:"likes_number"`
+	User        PostsListResponsePostUser `json:"user"`
 }
 
 type PostsListResponsePostUser struct {
@@ -97,9 +98,10 @@ func (controller PostsListController) Usecase(params PostsListRequest) (PostsLis
 
 	for _, post := range posts {
 		resultPost := PostsListResponsePost{
-			Id:        post.Id,
-			Text:      post.Text,
-			CreatedAt: post.CreatedAt,
+			Id:          post.Id,
+			Text:        post.Text,
+			CreatedAt:   post.CreatedAt,
+			LikesNumber: post.LikesNumber,
 		}
 		user := usersMap[post.UserId]
 		resultPost.User = PostsListResponsePostUser{

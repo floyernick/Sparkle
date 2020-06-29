@@ -61,12 +61,12 @@ func (db DB) DeletePost(post entities.Post) error {
 
 func (db DB) GetPostByBuilder(builder queryBuilder) (entities.Post, error) {
 
-	query := "SELECT id, user_id, text, location_code, created_at FROM posts"
+	query := "SELECT id, user_id, text, location_code, created_at, (SELECT COUNT(id) FROM likes WHERE post_id = posts.id) AS likes_number FROM posts"
 	query = builder.formatQuery(query)
 
 	var post entities.Post
 
-	err := db.performer().QueryRow(query, builder.params...).Scan(&post.Id, &post.UserId, &post.Text, &post.LocationCode, &post.CreatedAt)
+	err := db.performer().QueryRow(query, builder.params...).Scan(&post.Id, &post.UserId, &post.Text, &post.LocationCode, &post.CreatedAt, &post.LikesNumber)
 
 	if err != nil && err != sql.ErrNoRows {
 		if db.tx != nil {
@@ -81,7 +81,7 @@ func (db DB) GetPostByBuilder(builder queryBuilder) (entities.Post, error) {
 
 func (db DB) GetPostsByBuilder(builder queryBuilder) ([]entities.Post, error) {
 
-	query := "SELECT id, user_id, text, location_code, created_at FROM posts"
+	query := "SELECT id, user_id, text, location_code, created_at, (SELECT COUNT(id) FROM likes WHERE post_id = posts.id) AS likes_number FROM posts"
 	query = builder.formatQuery(query)
 
 	var posts []entities.Post
@@ -100,7 +100,7 @@ func (db DB) GetPostsByBuilder(builder queryBuilder) ([]entities.Post, error) {
 
 	for rows.Next() {
 		var post entities.Post
-		err := rows.Scan(&post.Id, &post.UserId, &post.Text, &post.LocationCode, &post.CreatedAt)
+		err := rows.Scan(&post.Id, &post.UserId, &post.Text, &post.LocationCode, &post.CreatedAt, &post.LikesNumber)
 		if err != nil {
 			if db.tx != nil {
 				db.tx.Rollback()

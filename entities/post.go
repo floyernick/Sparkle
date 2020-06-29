@@ -6,6 +6,7 @@ type Post struct {
 	Text         string
 	LocationCode string
 	CreatedAt    string
+	LikesNumber  int
 }
 
 func (post Post) Exists() bool {
