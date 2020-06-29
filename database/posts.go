@@ -105,6 +105,7 @@ func (db DB) GetPostsByBuilder(builder queryBuilder) ([]entities.Post, error) {
 			if db.tx != nil {
 				db.tx.Rollback()
 			}
+			logger.Warning(err)
 			return posts, err
 		}
 		posts = append(posts, post)
@@ -116,4 +117,9 @@ func (db DB) GetPostsByBuilder(builder queryBuilder) ([]entities.Post, error) {
 func (db DB) GetPostById(id int) (entities.Post, error) {
 	builder := db.GetBuilder().Equals("id", id)
 	return db.GetPostByBuilder(builder)
+}
+
+func (db DB) GetPostsByLocationCodeAndTime(code string, time string, offset int, limit int) ([]entities.Post, error) {
+	builder := db.GetBuilder().StartsWith("location_code", code).And().GreaterOrEquals("created_at", time).OrderBy("id", "DESC").Offset(offset).Limit(limit)
+	return db.GetPostsByBuilder(builder)
 }

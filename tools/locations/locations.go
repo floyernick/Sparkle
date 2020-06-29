@@ -4,6 +4,6 @@ import (
 	olc "github.com/google/open-location-code/go"
 )
 
-func ConvertToOLC(lat, long float64) string {
-	return olc.Encode(lat, long, 10)
+func CoordinatesToOLC(lat, long float64, length int) string {
+	return olc.Encode(lat, long, length)
 }

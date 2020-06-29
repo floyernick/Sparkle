@@ -65,15 +65,21 @@ func (builder queryBuilder) Like(field string, value interface{}) queryBuilder {
 	return builder
 }
 
+func (builder queryBuilder) StartsWith(field string, value interface{}) queryBuilder {
+	builder.params = append(builder.params, value)
+	builder.clause += fmt.Sprintf("%s ILIKE $%d || '%%' ", field, len(builder.params))
+	return builder
+}
+
 func (builder queryBuilder) In(field string, value interface{}) queryBuilder {
 	builder.params = append(builder.params, value)
-	builder.clause += fmt.Sprintf("%s = ANY(%d) ", field, len(builder.params))
+	builder.clause += fmt.Sprintf("%s = ANY($%d) ", field, len(builder.params))
 	return builder
 }
 
 func (builder queryBuilder) NotIn(field string, value interface{}) queryBuilder {
 	builder.params = append(builder.params, value)
-	builder.clause += fmt.Sprintf("%s = ANY(%d) ", field, len(builder.params))
+	builder.clause += fmt.Sprintf("%s = ANY($%d) ", field, len(builder.params))
 	return builder
 }
 

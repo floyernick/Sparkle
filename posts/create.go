@@ -65,7 +65,7 @@ func (controller PostsCreateController) Usecase(params PostsCreateRequest) (Post
 	post := entities.Post{
 		UserId:       user.Id,
 		Text:         params.Text,
-		LocationCode: locations.ConvertToOLC(params.Latitude, params.Longitude),
+		LocationCode: locations.CoordinatesToOLC(params.Latitude, params.Longitude, 10),
 		CreatedAt:    time.Now().UTC().Format(time.RFC3339),
 	}
 

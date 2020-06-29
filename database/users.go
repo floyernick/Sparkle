@@ -5,6 +5,8 @@ import (
 
 	"Sparkle/entities"
 	"Sparkle/tools/logger"
+
+	"github.com/lib/pq"
 )
 
 func (db DB) CreateUser(user entities.User) (int, error) {
@@ -101,11 +103,12 @@ func (db DB) GetUsersByBuilder(builder queryBuilder) ([]entities.User, error) {
 
 	for rows.Next() {
 		var user entities.User
-		err := rows.Scan(&user.Id, &user.Username, &user.Password)
+		err := rows.Scan(&user.Id, &user.Username, &user.Password, &user.AccessToken)
 		if err != nil {
 			if db.tx != nil {
 				db.tx.Rollback()
 			}
+			logger.Warning(err)
 			return users, err
 		}
 		users = append(users, user)
@@ -122,4 +125,9 @@ func (db DB) GetUserByAccessToken(token string) (entities.User, error) {
 func (db DB) GetUserByUsername(username string) (entities.User, error) {
 	builder := db.GetBuilder().Equals("username", username)
 	return db.GetUserByBuilder(builder)
+}
+
+func (db DB) GetUsersByIds(ids []int) ([]entities.User, error) {
+	builder := db.GetBuilder().In("id", pq.Array(ids))
+	return db.GetUsersByBuilder(builder)
 }
