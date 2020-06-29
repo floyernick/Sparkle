@@ -12,3 +12,6 @@ var UsernameUsed = errors.New("USERNAME_USED")
 var InvalidCredentials = errors.New("INVALID_CREDENTIALS")
 
 var PostNotFound = errors.New("POST_NOT_FOUND")
+
+var LikeExists = errors.New("LIKE_EXISTS")
+var LikeNotFound = errors.New("LIKE_NOT_FOUND")

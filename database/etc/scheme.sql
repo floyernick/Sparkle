@@ -11,3 +11,8 @@ CREATE TABLE posts (
     location_code VARCHAR(11) NOT NULL,
     created_at TIMESTAMP NOT NULL
 );
+CREATE TABLE likes (
+    id BIGSERIAL PRIMARY KEY,
+    user_id BIGINT NOT NULL,
+    post_id BIGINT NOT NULL
+);
