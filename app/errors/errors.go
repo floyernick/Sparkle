@@ -8,6 +8,7 @@ var InvalidParams = errors.New("INVALID_PARAMS")
 
 var ActionNotAllowed = errors.New("ACTION_NOT_ALLOWED")
 
+var UserNotFound = errors.New("USER_NOT_FOUND")
 var UsernameUsed = errors.New("USERNAME_USED")
 var InvalidCredentials = errors.New("INVALID_CREDENTIALS")
 

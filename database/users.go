@@ -122,6 +122,11 @@ func (db DB) GetUserByAccessToken(token string) (entities.User, error) {
 	return db.GetUserByBuilder(builder)
 }
 
+func (db DB) GetUserById(id int) (entities.User, error) {
+	builder := db.GetBuilder().Equals("id", id)
+	return db.GetUserByBuilder(builder)
+}
+
 func (db DB) GetUserByUsername(username string) (entities.User, error) {
 	builder := db.GetBuilder().Equals("username", username)
 	return db.GetUserByBuilder(builder)

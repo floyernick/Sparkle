@@ -123,3 +123,8 @@ func (db DB) GetPostsByLocationCodeAndTime(code string, time string, offset int,
 	builder := db.GetBuilder().StartsWith("location_code", code).And().GreaterOrEquals("created_at", time).OrderBy("id", "DESC").Offset(offset).Limit(limit)
 	return db.GetPostsByBuilder(builder)
 }
+
+func (db DB) GetPostsByUserAndTime(userId int, time string) ([]entities.Post, error) {
+	builder := db.GetBuilder().Equals("user_id", userId).And().GreaterOrEquals("created_at", time).OrderBy("id", "DESC")
+	return db.GetPostsByBuilder(builder)
+}
