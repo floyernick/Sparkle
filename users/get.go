@@ -82,9 +82,13 @@ func (controller UsersGetController) Usecase(params UsersGetRequest) (UsersGetRe
 		return result, errors.UserNotFound
 	}
 
-	maxCreatedAt := time.Now().UTC().AddDate(0, 0, -1).Format(time.RFC3339)
+	createdAfter := time.Now().UTC().AddDate(0, 0, -1).Format(time.RFC3339)
 
-	posts, err := controller.db.GetPostsByUserAndTime(requestedUser.Id, maxCreatedAt)
+	posts, err := controller.db.GetPostsByFilter(database.PostsFilter{
+		UserIdEquals:  requestedUser.Id,
+		CreatedAfter:  createdAfter,
+		OrderByIdDesc: true,
+	})
 
 	if err != nil {
 		return result, errors.InternalError

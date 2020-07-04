@@ -62,7 +62,7 @@ func (db DB) DeleteUser(user entities.User) error {
 	return nil
 }
 
-func (db DB) GetUserByBuilder(builder queryBuilder) (entities.User, error) {
+func (db DB) getUserByBuilder(builder queryBuilder) (entities.User, error) {
 
 	query := "SELECT id, username, password, access_token FROM users"
 	query = builder.formatQuery(query)
@@ -82,7 +82,7 @@ func (db DB) GetUserByBuilder(builder queryBuilder) (entities.User, error) {
 	return user, nil
 }
 
-func (db DB) GetUsersByBuilder(builder queryBuilder) ([]entities.User, error) {
+func (db DB) getUsersByBuilder(builder queryBuilder) ([]entities.User, error) {
 
 	query := "SELECT id, username, password, access_token FROM users"
 	query = builder.formatQuery(query)
@@ -118,21 +118,21 @@ func (db DB) GetUsersByBuilder(builder queryBuilder) ([]entities.User, error) {
 }
 
 func (db DB) GetUserByAccessToken(token string) (entities.User, error) {
-	builder := db.GetBuilder().Equals("access_token", token)
-	return db.GetUserByBuilder(builder)
+	builder := db.getBuilder().And().Equals("access_token", token)
+	return db.getUserByBuilder(builder)
 }
 
 func (db DB) GetUserById(id int) (entities.User, error) {
-	builder := db.GetBuilder().Equals("id", id)
-	return db.GetUserByBuilder(builder)
+	builder := db.getBuilder().And().Equals("id", id)
+	return db.getUserByBuilder(builder)
 }
 
 func (db DB) GetUserByUsername(username string) (entities.User, error) {
-	builder := db.GetBuilder().Equals("username", username)
-	return db.GetUserByBuilder(builder)
+	builder := db.getBuilder().And().Equals("username", username)
+	return db.getUserByBuilder(builder)
 }
 
 func (db DB) GetUsersByIds(ids []int) ([]entities.User, error) {
-	builder := db.GetBuilder().In("id", pq.Array(ids))
-	return db.GetUsersByBuilder(builder)
+	builder := db.getBuilder().And().In("id", pq.Array(ids))
+	return db.getUsersByBuilder(builder)
 }

@@ -4,7 +4,7 @@ import (
 	"fmt"
 )
 
-func (db DB) GetBuilder() queryBuilder {
+func (db DB) getBuilder() queryBuilder {
 	return queryBuilder{}
 }
 
@@ -121,7 +121,7 @@ func (builder queryBuilder) OrderBy(field string, direction string) queryBuilder
 
 func (builder queryBuilder) formatQuery(query string) string {
 	if len(builder.params) != 0 {
-		query += fmt.Sprintf(" WHERE %s", builder.clause)
+		query += fmt.Sprintf(" WHERE 1=1 %s", builder.clause)
 	}
 	if builder.orderField != nil && builder.orderDirection != nil {
 		query += fmt.Sprintf(" ORDER BY %s %s", *builder.orderField, *builder.orderDirection)

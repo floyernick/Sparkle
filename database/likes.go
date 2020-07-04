@@ -42,7 +42,7 @@ func (db DB) DeleteLike(like entities.Like) error {
 	return nil
 }
 
-func (db DB) GetLikeByBuilder(builder queryBuilder) (entities.Like, error) {
+func (db DB) getLikeByBuilder(builder queryBuilder) (entities.Like, error) {
 
 	query := "SELECT id, user_id, post_id FROM likes"
 	query = builder.formatQuery(query)
@@ -62,7 +62,7 @@ func (db DB) GetLikeByBuilder(builder queryBuilder) (entities.Like, error) {
 	return like, nil
 }
 
-func (db DB) GetLikesByBuilder(builder queryBuilder) ([]entities.Like, error) {
+func (db DB) getLikesByBuilder(builder queryBuilder) ([]entities.Like, error) {
 
 	query := "SELECT id, user_id, post_id FROM likes"
 	query = builder.formatQuery(query)
@@ -98,6 +98,6 @@ func (db DB) GetLikesByBuilder(builder queryBuilder) ([]entities.Like, error) {
 }
 
 func (db DB) GetLikeByUserIdAndPostId(userId int, postId int) (entities.Like, error) {
-	builder := db.GetBuilder().Equals("post_id", postId).And().Equals("user_id", userId)
-	return db.GetLikeByBuilder(builder)
+	builder := db.getBuilder().And().Equals("post_id", postId).And().Equals("user_id", userId)
+	return db.getLikeByBuilder(builder)
 }

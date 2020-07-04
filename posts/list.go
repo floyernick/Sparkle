@@ -78,9 +78,15 @@ func (controller PostsListController) Usecase(params PostsListRequest) (PostsLis
 
 	locationCode := locations.CoordinatesToOLC(params.Latitude, params.Longitude, 8)
 
-	maxCreatedAt := time.Now().UTC().AddDate(0, 0, -1).Format(time.RFC3339)
+	createdAfter := time.Now().UTC().AddDate(0, 0, -1).Format(time.RFC3339)
 
-	posts, err := controller.db.GetPostsByLocationCodeAndTime(locationCode, maxCreatedAt, params.Offset, params.Limit)
+	posts, err := controller.db.GetPostsByFilter(database.PostsFilter{
+		LocationCodeStartsWith: locationCode,
+		CreatedAfter:           createdAfter,
+		OrderByIdDesc:          true,
+		Offset:                 params.Offset,
+		Limit:                  params.Limit,
+	})
 
 	if err != nil {
 		return result, errors.InternalError

@@ -6,6 +6,15 @@ import (
 	"database/sql"
 )
 
+type PostsFilter struct {
+	UserIdEquals           int
+	LocationCodeStartsWith string
+	CreatedAfter           string
+	OrderByIdDesc          bool
+	Offset                 int
+	Limit                  int
+}
+
 func (db DB) CreatePost(post entities.Post) (int, error) {
 
 	query := "INSERT INTO posts(user_id, text, location_code, created_at) VALUES($1, $2, $3, $4) RETURNING id"
@@ -59,7 +68,7 @@ func (db DB) DeletePost(post entities.Post) error {
 	return nil
 }
 
-func (db DB) GetPostByBuilder(builder queryBuilder) (entities.Post, error) {
+func (db DB) getPostByBuilder(builder queryBuilder) (entities.Post, error) {
 
 	query := "SELECT id, user_id, text, location_code, created_at, (SELECT COUNT(id) FROM likes WHERE post_id = posts.id) AS likes_number FROM posts"
 	query = builder.formatQuery(query)
@@ -79,7 +88,7 @@ func (db DB) GetPostByBuilder(builder queryBuilder) (entities.Post, error) {
 	return post, nil
 }
 
-func (db DB) GetPostsByBuilder(builder queryBuilder) ([]entities.Post, error) {
+func (db DB) getPostsByBuilder(builder queryBuilder) ([]entities.Post, error) {
 
 	query := "SELECT id, user_id, text, location_code, created_at, (SELECT COUNT(id) FROM likes WHERE post_id = posts.id) AS likes_number FROM posts"
 	query = builder.formatQuery(query)
@@ -115,16 +124,29 @@ func (db DB) GetPostsByBuilder(builder queryBuilder) ([]entities.Post, error) {
 }
 
 func (db DB) GetPostById(id int) (entities.Post, error) {
-	builder := db.GetBuilder().Equals("id", id)
-	return db.GetPostByBuilder(builder)
+	builder := db.getBuilder().And().Equals("id", id)
+	return db.getPostByBuilder(builder)
 }
 
-func (db DB) GetPostsByLocationCodeAndTime(code string, time string, offset int, limit int) ([]entities.Post, error) {
-	builder := db.GetBuilder().StartsWith("location_code", code).And().GreaterOrEquals("created_at", time).OrderBy("id", "DESC").Offset(offset).Limit(limit)
-	return db.GetPostsByBuilder(builder)
-}
-
-func (db DB) GetPostsByUserAndTime(userId int, time string) ([]entities.Post, error) {
-	builder := db.GetBuilder().Equals("user_id", userId).And().GreaterOrEquals("created_at", time).OrderBy("id", "DESC")
-	return db.GetPostsByBuilder(builder)
+func (db DB) GetPostsByFilter(filter PostsFilter) ([]entities.Post, error) {
+	builder := db.getBuilder()
+	if filter.UserIdEquals != 0 {
+		builder = builder.And().Equals("user_id", filter.UserIdEquals)
+	}
+	if filter.LocationCodeStartsWith != "" {
+		builder = builder.And().StartsWith("location_code", filter.LocationCodeStartsWith)
+	}
+	if filter.CreatedAfter != "" {
+		builder = builder.And().GreaterOrEquals("created_at", filter.CreatedAfter)
+	}
+	if filter.OrderByIdDesc {
+		builder = builder.OrderBy("id", "DESC")
+	}
+	if filter.Offset != 0 {
+		builder = builder.Offset(filter.Offset)
+	}
+	if filter.Limit != 0 {
+		builder = builder.Limit(filter.Limit)
+	}
+	return db.getPostsByBuilder(builder)
 }
