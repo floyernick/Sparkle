@@ -5,7 +5,7 @@ import (
 	"Sparkle/database"
 	"Sparkle/entities"
 	"Sparkle/handler"
-	"Sparkle/tools/locations"
+	"Sparkle/tools/olc"
 	"Sparkle/tools/validator"
 	"net/http"
 	"time"
@@ -76,7 +76,7 @@ func (controller PostsListController) Usecase(params PostsListRequest) (PostsLis
 		return result, errors.InvalidCredentials
 	}
 
-	locationCode := locations.CoordinatesToOLC(params.Latitude, params.Longitude, 8)
+	locationCode := olc.CoordinatesToOLC(params.Latitude, params.Longitude, 8)
 
 	createdAfter := time.Now().UTC().AddDate(0, 0, -1).Format(time.RFC3339)
 
