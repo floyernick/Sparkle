@@ -9,6 +9,7 @@ require (
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/leodido/go-urn v1.2.0 // indirect
 	github.com/lib/pq v1.6.0
+	github.com/mmcloughlin/geohash v0.10.0
 	golang.org/x/crypto v0.0.0-20200311171314-f7b00557c8c4
 	gopkg.in/go-playground/validator.v9 v9.31.0
 )
