@@ -5,7 +5,7 @@ import (
 	"Sparkle/database"
 	"Sparkle/entities"
 	"Sparkle/handler"
-	"Sparkle/tools/olc"
+	"Sparkle/tools/geohash"
 	"Sparkle/tools/validator"
 	"net/http"
 	"time"
@@ -15,6 +15,7 @@ type PostsListRequest struct {
 	Token     string  `json:"token" validate:"required,uuid"`
 	Longitude float64 `json:"longitude" validate:"required,min=-180,max=180"`
 	Latitude  float64 `json:"latitude" validate:"min=-90,max=90"`
+	Zoom      int     `json:"zoom" validate:"min=1,max=20"`
 	Offset    int     `json:"offset" validate:"min=0"`
 	Limit     int     `json:"limit" validate:"min=1,max=50"`
 }
@@ -76,7 +77,7 @@ func (controller PostsListController) Usecase(params PostsListRequest) (PostsLis
 		return result, errors.InvalidCredentials
 	}
 
-	locationCode := olc.CoordinatesToOLC(params.Latitude, params.Longitude, 8)
+	locationCode := geohash.CoordinatesToGeohash(params.Latitude, params.Longitude, geohash.GetClickableLength(params.Zoom))
 
 	createdAfter := time.Now().UTC().AddDate(0, 0, -1).Format(time.RFC3339)
 

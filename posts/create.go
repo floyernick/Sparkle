@@ -5,7 +5,7 @@ import (
 	"Sparkle/database"
 	"Sparkle/entities"
 	"Sparkle/handler"
-	"Sparkle/tools/olc"
+	"Sparkle/tools/geohash"
 	"Sparkle/tools/validator"
 	"net/http"
 	"time"
@@ -65,7 +65,7 @@ func (controller PostsCreateController) Usecase(params PostsCreateRequest) (Post
 	post := entities.Post{
 		UserId:       user.Id,
 		Text:         params.Text,
-		LocationCode: olc.CoordinatesToOLC(params.Latitude, params.Longitude, 10),
+		LocationCode: geohash.CoordinatesToGeohash(params.Latitude, params.Longitude, geohash.MAX_LENGTH),
 		CreatedAt:    time.Now().UTC().Format(time.RFC3339),
 	}
 
