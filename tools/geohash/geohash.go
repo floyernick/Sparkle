@@ -8,6 +8,10 @@ func CoordinatesToGeohash(lat, long float64, length int) string {
 	return geohash.Encode(lat, long)[:length]
 }
 
+func GeohashToCoordinates(hash string) (lat, long float64) {
+	return geohash.DecodeCenter(hash)
+}
+
 func GetClickableLength(zoom int) int {
 	switch {
 	case zoom >= 17:

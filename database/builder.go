@@ -13,6 +13,7 @@ type queryBuilder struct {
 	params         []interface{}
 	offset         *int
 	limit          *int
+	groupBy        *string
 	orderField     *string
 	orderDirection *string
 }
@@ -103,6 +104,11 @@ func (builder queryBuilder) EndGroup() queryBuilder {
 	return builder
 }
 
+func (builder queryBuilder) GroupBy(field string) queryBuilder {
+	builder.groupBy = &field
+	return builder
+}
+
 func (builder queryBuilder) Offset(offset int) queryBuilder {
 	builder.offset = &offset
 	return builder
@@ -125,6 +131,9 @@ func (builder queryBuilder) formatQuery(query string) string {
 	}
 	if builder.orderField != nil && builder.orderDirection != nil {
 		query += fmt.Sprintf(" ORDER BY %s %s", *builder.orderField, *builder.orderDirection)
+	}
+	if builder.groupBy != nil {
+		query += fmt.Sprintf(" GROUP BY %s", *builder.groupBy)
 	}
 	if builder.offset != nil {
 		query += fmt.Sprintf(" OFFSET %d", *builder.offset)
