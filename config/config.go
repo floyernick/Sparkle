@@ -1,7 +1,6 @@
 package config
 
 import (
-	"os"
 	"time"
 
 	"github.com/kelseyhightower/envconfig"
@@ -22,23 +21,15 @@ type DatabaseConfig struct {
 }
 
 type EnvironmentConfig struct {
-	Server   ServerConfig
-	Database DatabaseConfig
+	Server   ServerConfig   `envconfig:"server"`
+	Database DatabaseConfig `envconfig:"database"`
 }
 
 func LoadConfig() (EnvironmentConfig, error) {
 
 	var config EnvironmentConfig
 
-	prefix := "sparkle_" + os.Getenv("SPARKLE_ENV")
-
-	err := envconfig.Process(prefix+"_server", &config.Server)
-
-	if err != nil {
-		return config, err
-	}
-
-	err = envconfig.Process(prefix+"_database", &config.Database)
+	err := envconfig.Process("sparkle", &config)
 
 	if err != nil {
 		return config, err
