@@ -14,6 +14,17 @@ type ServerConfig struct {
 }
 
 type DatabaseConfig struct {
+	Redis    RedisConfig    `envconfig:"redis"`
+	Postgres PostgresConfig `envconfig:"postgres"`
+}
+
+type RedisConfig struct {
+	Addr     string `envconfig:"addr"`
+	Password string `envconfig:"password"`
+	DB       int    `envconfig:"db"`
+}
+
+type PostgresConfig struct {
 	Url          string        `envconfig:"url"`
 	OpenConns    int           `envconfig:"open_conns"`
 	IdleConns    int           `envconfig:"idle_conns"`
@@ -22,7 +33,7 @@ type DatabaseConfig struct {
 
 type EnvironmentConfig struct {
 	Server   ServerConfig   `envconfig:"server"`
-	Database DatabaseConfig `envconfig:"database"`
+	Database DatabaseConfig `envconfig:"db"`
 }
 
 func LoadConfig() (EnvironmentConfig, error) {
