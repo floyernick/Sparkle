@@ -9,13 +9,12 @@ func (db DB) getBuilder() queryBuilder {
 }
 
 type queryBuilder struct {
-	clause         string
-	params         []interface{}
-	offset         *int
-	limit          *int
-	groupBy        *string
-	orderField     *string
-	orderDirection *string
+	clause     string
+	params     []interface{}
+	offset     *int
+	limit      *int
+	groupBy    *string
+	orderItems [][2]string
 }
 
 func (builder queryBuilder) Equals(field string, value interface{}) queryBuilder {
@@ -120,8 +119,7 @@ func (builder queryBuilder) Limit(limit int) queryBuilder {
 }
 
 func (builder queryBuilder) OrderBy(field string, direction string) queryBuilder {
-	builder.orderField = &field
-	builder.orderDirection = &direction
+	builder.orderItems = append(builder.orderItems, [2]string{field, direction})
 	return builder
 }
 
@@ -129,11 +127,17 @@ func (builder queryBuilder) formatQuery(query string) string {
 	if len(builder.params) != 0 {
 		query += fmt.Sprintf(" WHERE 1=1 %s", builder.clause)
 	}
-	if builder.orderField != nil && builder.orderDirection != nil {
-		query += fmt.Sprintf(" ORDER BY %s %s", *builder.orderField, *builder.orderDirection)
-	}
 	if builder.groupBy != nil {
 		query += fmt.Sprintf(" GROUP BY %s", *builder.groupBy)
+	}
+	if len(builder.orderItems) != 0 {
+		query += " ORDER BY "
+		for i, orderItem := range builder.orderItems {
+			if i != 0 {
+				query += ", "
+			}
+			query += fmt.Sprintf("%s %s", orderItem[0], orderItem[1])
+		}
 	}
 	if builder.offset != nil {
 		query += fmt.Sprintf(" OFFSET %d", *builder.offset)

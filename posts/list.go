@@ -84,7 +84,7 @@ func (controller PostsListController) Usecase(params PostsListRequest) (PostsLis
 	posts, err := controller.db.GetPostsByFilter(database.PostsFilter{
 		LocationCodeStartsWith: locationCode,
 		CreatedAfter:           createdAfter,
-		OrderByIdDesc:          true,
+		OrderByCreatedAtDesc:   true,
 		Offset:                 params.Offset,
 		Limit:                  params.Limit,
 	})

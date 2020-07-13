@@ -16,3 +16,4 @@ CREATE TABLE likes (
     user_id BIGINT NOT NULL,
     post_id BIGINT NOT NULL
 );
+CREATE INDEX posts_created_at ON posts (created_at DESC);

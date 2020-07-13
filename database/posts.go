@@ -10,7 +10,7 @@ type PostsFilter struct {
 	UserIdEquals           int
 	LocationCodeStartsWith string
 	CreatedAfter           string
-	OrderByIdDesc          bool
+	OrderByCreatedAtDesc   bool
 	Offset                 int
 	Limit                  int
 }
@@ -139,8 +139,8 @@ func (db DB) GetPostsByFilter(filter PostsFilter) ([]entities.Post, error) {
 	if filter.CreatedAfter != "" {
 		builder = builder.And().GreaterOrEquals("created_at", filter.CreatedAfter)
 	}
-	if filter.OrderByIdDesc {
-		builder = builder.OrderBy("id", "DESC")
+	if filter.OrderByCreatedAtDesc {
+		builder = builder.OrderBy("created_at", "DESC")
 	}
 	if filter.Offset != 0 {
 		builder = builder.Offset(filter.Offset)

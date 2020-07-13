@@ -85,9 +85,9 @@ func (controller UsersGetController) Usecase(params UsersGetRequest) (UsersGetRe
 	createdAfter := time.Now().UTC().AddDate(0, 0, -1).Format(time.RFC3339)
 
 	posts, err := controller.db.GetPostsByFilter(database.PostsFilter{
-		UserIdEquals:  requestedUser.Id,
-		CreatedAfter:  createdAfter,
-		OrderByIdDesc: true,
+		UserIdEquals:         requestedUser.Id,
+		CreatedAfter:         createdAfter,
+		OrderByCreatedAtDesc: true,
 	})
 
 	if err != nil {
