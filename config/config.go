@@ -13,18 +13,13 @@ type ServerConfig struct {
 	IdleTimeout  time.Duration `envconfig:"idle_timeout"`
 }
 
-type DatabaseConfig struct {
-	Redis    RedisConfig    `envconfig:"redis"`
-	Postgres PostgresConfig `envconfig:"postgres"`
-}
-
-type RedisConfig struct {
+type CacheConfig struct {
 	Addr     string `envconfig:"addr"`
 	Password string `envconfig:"password"`
 	DB       int    `envconfig:"db"`
 }
 
-type PostgresConfig struct {
+type DatabaseConfig struct {
 	Url          string        `envconfig:"url"`
 	OpenConns    int           `envconfig:"open_conns"`
 	IdleConns    int           `envconfig:"idle_conns"`
@@ -34,6 +29,7 @@ type PostgresConfig struct {
 type EnvironmentConfig struct {
 	Server   ServerConfig   `envconfig:"server"`
 	Database DatabaseConfig `envconfig:"db"`
+	Cache    CacheConfig    `envconfig:"cache"`
 }
 
 func LoadConfig() (EnvironmentConfig, error) {
