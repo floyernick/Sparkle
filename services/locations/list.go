@@ -54,7 +54,7 @@ func (service LocationsService) List(params LocationsListRequest) (LocationsList
 		ChildCodeLengthEquals: childLocationCodeLength,
 		ParentCodeStartsWith:  parentLocationCode,
 		CreatedAfter:          createdAfter,
-		Limit:                 500,
+		Limit:                 100,
 	})
 
 	if err != nil {

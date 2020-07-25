@@ -30,7 +30,7 @@ func Serve(config config.ServerConfig, users users.UsersController, posts posts.
 		ReadTimeout:  config.ReadTimeout,
 		WriteTimeout: config.WriteTimeout,
 		IdleTimeout:  config.IdleTimeout,
-		Handler:      mux,
+		Handler:      http.TimeoutHandler(mux, config.HandlerTimeout, ""),
 	}
 
 	return server.ListenAndServe()

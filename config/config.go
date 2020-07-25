@@ -7,10 +7,11 @@ import (
 )
 
 type ServerConfig struct {
-	Port         string        `envconfig:"port"`
-	ReadTimeout  time.Duration `envconfig:"read_timeout"`
-	WriteTimeout time.Duration `envconfig:"write_timeout"`
-	IdleTimeout  time.Duration `envconfig:"idle_timeout"`
+	Port           string        `envconfig:"port"`
+	ReadTimeout    time.Duration `envconfig:"read_timeout"`
+	WriteTimeout   time.Duration `envconfig:"write_timeout"`
+	IdleTimeout    time.Duration `envconfig:"idle_timeout"`
+	HandlerTimeout time.Duration `envconfig:"handler_timeout"`
 }
 
 type CacheConfig struct {
