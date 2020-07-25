@@ -23,22 +23,23 @@ func (gateway LocationsGateway) ListByFilter(filter ListFilter) ([]entities.Loca
 	var locations []entities.Location
 
 	cachedValue, err := gateway.cache.Client.Get(gateway.cache.Ctx, filter.ParentCodeStartsWith).Result()
+
 	if err == nil {
 		err = json.Unmarshal([]byte(cachedValue), &locations)
 		if err == nil {
 			return locations, nil
 		} else {
-			logger.Warning(err)
+			logger.Error(err)
 		}
 	} else if err != redis.Nil {
-		logger.Warning(err)
+		logger.Error(err)
 	}
 
 	query := fmt.Sprintf("SELECT SUBSTRING(location_code FROM 1 FOR %d) AS code, COUNT(id) AS number FROM posts", filter.ChildCodeLengthEquals)
 
 	builder := gateway.db.GetBuilder()
 	builder = builder.And().StartsWith("location_code", filter.ParentCodeStartsWith).
-		And().GreaterOrEquals("created_at", filter.CreatedAfter).GroupBy("code").Limit(filter.Limit)
+		And().GreaterOrEquals("created_at", filter.CreatedAfter).GroupBy("code").OrderBy("number", "DESC").Limit(filter.Limit)
 
 	query = builder.FormatQuery(query)
 
@@ -48,7 +49,7 @@ func (gateway LocationsGateway) ListByFilter(filter ListFilter) ([]entities.Loca
 		if gateway.db.Tx != nil {
 			gateway.db.Tx.Rollback()
 		}
-		logger.Warning(err)
+		logger.Error(err)
 		return locations, err
 	}
 
@@ -61,7 +62,7 @@ func (gateway LocationsGateway) ListByFilter(filter ListFilter) ([]entities.Loca
 			if gateway.db.Tx != nil {
 				gateway.db.Tx.Rollback()
 			}
-			logger.Warning(err)
+			logger.Error(err)
 			return locations, err
 		}
 		locations = append(locations, location)
@@ -70,14 +71,14 @@ func (gateway LocationsGateway) ListByFilter(filter ListFilter) ([]entities.Loca
 	cachingValue, err := json.Marshal(locations)
 
 	if err != nil {
-		logger.Warning(err)
+		logger.Error(err)
 		return locations, nil
 	}
 
 	err = gateway.cache.Client.SetNX(gateway.cache.Ctx, filter.ParentCodeStartsWith, cachingValue, 10*time.Minute).Err()
 
 	if err != nil {
-		logger.Warning(err)
+		logger.Error(err)
 	}
 
 	return locations, nil

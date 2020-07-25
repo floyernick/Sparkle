@@ -17,7 +17,7 @@ func (gateway LikesGateway) Create(like entities.Like) (int, error) {
 		if gateway.db.Tx != nil {
 			gateway.db.Tx.Rollback()
 		}
-		logger.Warning(err)
+		logger.Error(err)
 		return id, err
 	}
 

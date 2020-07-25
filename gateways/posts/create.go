@@ -17,7 +17,7 @@ func (gateway PostsGateway) Create(post entities.Post) (int, error) {
 		if gateway.db.Tx != nil {
 			gateway.db.Tx.Rollback()
 		}
-		logger.Warning(err)
+		logger.Error(err)
 		return id, err
 	}
 

@@ -15,7 +15,7 @@ func (gateway PostsGateway) Delete(post entities.Post) error {
 		if gateway.db.Tx != nil {
 			gateway.db.Tx.Rollback()
 		}
-		logger.Warning(err)
+		logger.Error(err)
 		return err
 	}
 

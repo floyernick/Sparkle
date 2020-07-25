@@ -22,7 +22,7 @@ func (gateway UsersGateway) listByBuilder(builder database.QueryBuilder) ([]enti
 		if gateway.db.Tx != nil {
 			gateway.db.Tx.Rollback()
 		}
-		logger.Warning(err)
+		logger.Error(err)
 		return users, err
 	}
 
@@ -35,7 +35,7 @@ func (gateway UsersGateway) listByBuilder(builder database.QueryBuilder) ([]enti
 			if gateway.db.Tx != nil {
 				gateway.db.Tx.Rollback()
 			}
-			logger.Warning(err)
+			logger.Error(err)
 			return users, err
 		}
 		users = append(users, user)

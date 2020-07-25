@@ -28,19 +28,25 @@ func main() {
 	cfg, err := config.LoadConfig()
 
 	if err != nil {
-		logger.Error(err)
+		logger.Fatal(err)
+	}
+
+	err = logger.Setup(cfg.Logger)
+
+	if err != nil {
+		logger.Fatal(err)
 	}
 
 	db, err := database.Init(cfg.Database)
 
 	if err != nil {
-		logger.Error(err)
+		logger.Fatal(err)
 	}
 
 	cache, err := cache.Init(cfg.Cache)
 
 	if err != nil {
-		logger.Error(err)
+		logger.Fatal(err)
 	}
 
 	usersGateway := usersGateway.New(db)
@@ -61,7 +67,7 @@ func main() {
 	err = delivery.Serve(cfg.Server, usersController, postsController, likesController, locationsController)
 
 	if err != nil {
-		logger.Error(err)
+		logger.Fatal(err)
 	}
 
 }

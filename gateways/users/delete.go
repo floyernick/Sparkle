@@ -15,7 +15,7 @@ func (gateway UsersGateway) Delete(user entities.User) error {
 		if gateway.db.Tx != nil {
 			gateway.db.Tx.Rollback()
 		}
-		logger.Warning(err)
+		logger.Error(err)
 		return err
 	}
 

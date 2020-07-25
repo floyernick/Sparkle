@@ -12,7 +12,7 @@ func (db *DB) Transaction() error {
 	tx, err := db.Pool.Begin()
 
 	if err != nil {
-		logger.Warning(err)
+		logger.Error(err)
 		return err
 	}
 
@@ -31,7 +31,7 @@ func (db DB) Commit() error {
 	err := db.Tx.Commit()
 
 	if err != nil {
-		logger.Warning(err)
+		logger.Error(err)
 		return err
 	}
 

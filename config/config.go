@@ -26,10 +26,15 @@ type DatabaseConfig struct {
 	ConnLifetime time.Duration `envconfig:"conn_lifetime"`
 }
 
+type LoggerConfig struct {
+	Debug bool `envconfig:"debug"`
+}
+
 type EnvironmentConfig struct {
 	Server   ServerConfig   `envconfig:"server"`
 	Database DatabaseConfig `envconfig:"db"`
 	Cache    CacheConfig    `envconfig:"cache"`
+	Logger   LoggerConfig   `envconfig:"logger"`
 }
 
 func LoadConfig() (EnvironmentConfig, error) {

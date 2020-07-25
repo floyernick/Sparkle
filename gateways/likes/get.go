@@ -20,7 +20,7 @@ func (gateway LikesGateway) getByBuilder(builder database.QueryBuilder) (entitie
 		if gateway.db.Tx != nil {
 			gateway.db.Tx.Rollback()
 		}
-		logger.Warning(err)
+		logger.Error(err)
 		return like, err
 	}
 
