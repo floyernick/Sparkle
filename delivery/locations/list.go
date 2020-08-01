@@ -13,14 +13,16 @@ func (controller LocationsController) List(w http.ResponseWriter, r *http.Reques
 
 	if err := handlers.ParseRequestBody(r, &req); err != nil {
 		handlers.RespondWithError(w, errors.BadRequest)
+		return
 	}
 
 	res, err := controller.service.List(req)
 
 	if err != nil {
 		handlers.RespondWithError(w, err)
-	} else {
-		handlers.RespondWithSuccess(w, res)
+		return
 	}
+
+	handlers.RespondWithSuccess(w, res)
 
 }

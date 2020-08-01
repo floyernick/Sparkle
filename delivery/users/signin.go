@@ -13,14 +13,16 @@ func (controller UsersController) Signin(w http.ResponseWriter, r *http.Request)
 
 	if err := handlers.ParseRequestBody(r, &req); err != nil {
 		handlers.RespondWithError(w, errors.BadRequest)
+		return
 	}
 
 	res, err := controller.service.Signin(req)
 
 	if err != nil {
 		handlers.RespondWithError(w, err)
-	} else {
-		handlers.RespondWithSuccess(w, res)
+		return
 	}
+
+	handlers.RespondWithSuccess(w, res)
 
 }
