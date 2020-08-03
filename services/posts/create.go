@@ -12,7 +12,7 @@ type PostsCreateRequest struct {
 	Token     string  `json:"token" validate:"required,uuid"`
 	Text      string  `json:"text" validate:"required,min=1,max=150"`
 	Longitude float64 `json:"longitude" validate:"required,min=-180,max=180"`
-	Latitude  float64 `json:"latitude" validate:"min=-90,max=90"`
+	Latitude  float64 `json:"latitude" validate:"required,min=-90,max=90"`
 }
 
 type PostsCreateResponse struct {
