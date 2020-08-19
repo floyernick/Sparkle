@@ -37,20 +37,20 @@ type PostsListResponsePostUser struct {
 
 func (service PostsService) List(params PostsListRequest) (PostsListResponse, error) {
 
-	var result PostsListResponse
+	var response PostsListResponse
 
 	if err := validator.Process(params); err != nil {
-		return result, errors.InvalidParams
+		return response, errors.InvalidParams
 	}
 
 	user, err := service.users.GetByAccessToken(params.Token)
 
 	if err != nil {
-		return result, errors.InternalError
+		return response, errors.InternalError
 	}
 
 	if !user.Exists() {
-		return result, errors.InvalidCredentials
+		return response, errors.InvalidCredentials
 	}
 
 	locationCode := geohash.CoordinatesToGeohash(params.Latitude, params.Longitude, geohash.GetClickableLength(params.Zoom))
@@ -66,34 +66,34 @@ func (service PostsService) List(params PostsListRequest) (PostsListResponse, er
 	})
 
 	if err != nil {
-		return result, errors.InternalError
+		return response, errors.InternalError
 	}
 
 	users, err := service.users.ListByIds(entities.GetUserIdsFromPosts(posts))
 
 	if err != nil {
-		return result, errors.InternalError
+		return response, errors.InternalError
 	}
 
 	usersMap := entities.UsersListToMap(users)
 
-	result.Posts = make([]PostsListResponsePost, 0, len(posts))
+	response.Posts = make([]PostsListResponsePost, 0, len(posts))
 
 	for _, post := range posts {
-		resultPost := PostsListResponsePost{
+		responsePost := PostsListResponsePost{
 			Id:          post.Id,
 			Text:        post.Text,
 			CreatedAt:   post.CreatedAt,
 			LikesNumber: post.LikesNumber,
 		}
 		user := usersMap[post.UserId]
-		resultPost.User = PostsListResponsePostUser{
+		responsePost.User = PostsListResponsePostUser{
 			Id:       user.Id,
 			Username: user.Username,
 		}
-		result.Posts = append(result.Posts, resultPost)
+		response.Posts = append(response.Posts, responsePost)
 	}
 
-	return result, nil
+	return response, nil
 
 }

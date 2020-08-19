@@ -15,40 +15,40 @@ type LikesCreateResponse struct{}
 
 func (service LikesService) Create(params LikesCreateRequest) (LikesCreateResponse, error) {
 
-	var result LikesCreateResponse
+	var response LikesCreateResponse
 
 	if err := validator.Process(params); err != nil {
-		return result, errors.InvalidParams
+		return response, errors.InvalidParams
 	}
 
 	user, err := service.users.GetByAccessToken(params.Token)
 
 	if err != nil {
-		return result, errors.InternalError
+		return response, errors.InternalError
 	}
 
 	if !user.Exists() {
-		return result, errors.InvalidCredentials
+		return response, errors.InvalidCredentials
 	}
 
 	post, err := service.posts.GetById(params.PostId)
 
 	if err != nil {
-		return result, errors.InternalError
+		return response, errors.InternalError
 	}
 
 	if !post.Exists() {
-		return result, errors.PostNotFound
+		return response, errors.PostNotFound
 	}
 
 	like, err := service.likes.GetByUserIdAndPostId(user.Id, post.Id)
 
 	if err != nil {
-		return result, errors.InternalError
+		return response, errors.InternalError
 	}
 
 	if like.Exists() {
-		return result, errors.LikeExists
+		return response, errors.LikeExists
 	}
 
 	like = entities.Like{
@@ -59,9 +59,9 @@ func (service LikesService) Create(params LikesCreateRequest) (LikesCreateRespon
 	like.Id, err = service.likes.Create(like)
 
 	if err != nil {
-		return result, errors.InternalError
+		return response, errors.InternalError
 	}
 
-	return result, nil
+	return response, nil
 
 }

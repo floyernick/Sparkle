@@ -32,30 +32,30 @@ type UsersGetResponsePost struct {
 
 func (service UsersService) Get(params UsersGetRequest) (UsersGetResponse, error) {
 
-	var result UsersGetResponse
+	var response UsersGetResponse
 
 	if err := validator.Process(params); err != nil {
-		return result, errors.InvalidParams
+		return response, errors.InvalidParams
 	}
 
 	user, err := service.users.GetByAccessToken(params.Token)
 
 	if err != nil {
-		return result, errors.InternalError
+		return response, errors.InternalError
 	}
 
 	if !user.Exists() {
-		return result, errors.InvalidCredentials
+		return response, errors.InvalidCredentials
 	}
 
 	requestedUser, err := service.users.GetById(params.Id)
 
 	if err != nil {
-		return result, errors.InternalError
+		return response, errors.InternalError
 	}
 
 	if !requestedUser.Exists() {
-		return result, errors.UserNotFound
+		return response, errors.UserNotFound
 	}
 
 	createdAfter := time.Now().UTC().AddDate(0, 0, -1).Format(time.RFC3339)
@@ -67,26 +67,26 @@ func (service UsersService) Get(params UsersGetRequest) (UsersGetResponse, error
 	})
 
 	if err != nil {
-		return result, errors.InternalError
+		return response, errors.InternalError
 	}
 
-	result.User = UsersGetResponseUser{
+	response.User = UsersGetResponseUser{
 		Id:       requestedUser.Id,
 		Username: requestedUser.Username,
 	}
-	result.Posts = make([]UsersGetResponsePost, 0, len(posts))
+	response.Posts = make([]UsersGetResponsePost, 0, len(posts))
 
 	for _, post := range posts {
-		resultPost := UsersGetResponsePost{
+		responsePost := UsersGetResponsePost{
 			Id:           post.Id,
 			Text:         post.Text,
 			LocationCode: post.LocationCode,
 			CreatedAt:    post.CreatedAt,
 			LikesNumber:  post.LikesNumber,
 		}
-		result.Posts = append(result.Posts, resultPost)
+		response.Posts = append(response.Posts, responsePost)
 	}
 
-	return result, nil
+	return response, nil
 
 }

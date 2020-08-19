@@ -28,20 +28,20 @@ type LocationsListResponseLocation struct {
 
 func (service LocationsService) List(params LocationsListRequest) (LocationsListResponse, error) {
 
-	var result LocationsListResponse
+	var response LocationsListResponse
 
 	if err := validator.Process(params); err != nil {
-		return result, errors.InvalidParams
+		return response, errors.InvalidParams
 	}
 
 	user, err := service.users.GetByAccessToken(params.Token)
 
 	if err != nil {
-		return result, errors.InternalError
+		return response, errors.InternalError
 	}
 
 	if !user.Exists() {
-		return result, errors.InvalidCredentials
+		return response, errors.InvalidCredentials
 	}
 
 	parentLocationCode := geohash.CoordinatesToGeohash(params.Latitude, params.Longitude, geohash.GetParentLength(params.Zoom))
@@ -58,22 +58,22 @@ func (service LocationsService) List(params LocationsListRequest) (LocationsList
 	})
 
 	if err != nil {
-		return result, errors.InternalError
+		return response, errors.InternalError
 	}
 
 	locations = entities.LocationsWithCoordinates(locations)
 
-	result.Locations = make([]LocationsListResponseLocation, 0, len(locations))
+	response.Locations = make([]LocationsListResponseLocation, 0, len(locations))
 
 	for _, location := range locations {
-		resultLocation := LocationsListResponseLocation{
+		responseLocation := LocationsListResponseLocation{
 			Longitude:   location.Longitude,
 			Latitude:    location.Latitude,
 			PostsNumber: location.PostsNumber,
 		}
-		result.Locations = append(result.Locations, resultLocation)
+		response.Locations = append(response.Locations, responseLocation)
 	}
 
-	return result, nil
+	return response, nil
 
 }

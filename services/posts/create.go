@@ -21,20 +21,20 @@ type PostsCreateResponse struct {
 
 func (service PostsService) Create(params PostsCreateRequest) (PostsCreateResponse, error) {
 
-	var result PostsCreateResponse
+	var response PostsCreateResponse
 
 	if err := validator.Process(params); err != nil {
-		return result, errors.InvalidParams
+		return response, errors.InvalidParams
 	}
 
 	user, err := service.users.GetByAccessToken(params.Token)
 
 	if err != nil {
-		return result, errors.InternalError
+		return response, errors.InternalError
 	}
 
 	if !user.Exists() {
-		return result, errors.InvalidCredentials
+		return response, errors.InvalidCredentials
 	}
 
 	post := entities.Post{
@@ -47,13 +47,13 @@ func (service PostsService) Create(params PostsCreateRequest) (PostsCreateRespon
 	post.Id, err = service.posts.Create(post)
 
 	if err != nil {
-		return result, errors.InternalError
+		return response, errors.InternalError
 	}
 
-	result = PostsCreateResponse{
+	response = PostsCreateResponse{
 		Id: post.Id,
 	}
 
-	return result, nil
+	return response, nil
 
 }

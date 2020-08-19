@@ -18,31 +18,31 @@ type UsersSigninResponse struct {
 
 func (service UsersService) Signin(params UsersSigninRequest) (UsersSigninResponse, error) {
 
-	var result UsersSigninResponse
+	var response UsersSigninResponse
 
 	if err := validator.Process(params); err != nil {
-		return result, errors.InvalidParams
+		return response, errors.InvalidParams
 	}
 
 	user, err := service.users.GetByUsername(params.Username)
 
 	if err != nil {
-		return result, errors.InternalError
+		return response, errors.InternalError
 	}
 
 	if !user.Exists() {
-		return result, errors.InvalidCredentials
+		return response, errors.InvalidCredentials
 	}
 
 	if !passwords.CheckHash(params.Password, user.Password) {
-		return result, errors.InvalidCredentials
+		return response, errors.InvalidCredentials
 	}
 
-	result = UsersSigninResponse{
+	response = UsersSigninResponse{
 		Id:    user.Id,
 		Token: user.AccessToken,
 	}
 
-	return result, nil
+	return response, nil
 
 }

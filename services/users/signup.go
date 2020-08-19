@@ -20,20 +20,20 @@ type UsersSignupResponse struct {
 
 func (service UsersService) Signup(params UsersSignupRequest) (UsersSignupResponse, error) {
 
-	var result UsersSignupResponse
+	var response UsersSignupResponse
 
 	if err := validator.Process(params); err != nil {
-		return result, errors.InvalidParams
+		return response, errors.InvalidParams
 	}
 
 	user, err := service.users.GetByUsername(params.Username)
 
 	if err != nil {
-		return result, errors.InternalError
+		return response, errors.InternalError
 	}
 
 	if user.Exists() {
-		return result, errors.UsernameUsed
+		return response, errors.UsernameUsed
 	}
 
 	user = entities.User{
@@ -44,20 +44,20 @@ func (service UsersService) Signup(params UsersSignupRequest) (UsersSignupRespon
 	user.Password, err = passwords.GenerateHash(params.Password)
 
 	if err != nil {
-		return result, errors.InternalError
+		return response, errors.InternalError
 	}
 
 	user.Id, err = service.users.Create(user)
 
 	if err != nil {
-		return result, errors.InternalError
+		return response, errors.InternalError
 	}
 
-	result = UsersSignupResponse{
+	response = UsersSignupResponse{
 		Id:    user.Id,
 		Token: user.AccessToken,
 	}
 
-	return result, nil
+	return response, nil
 
 }

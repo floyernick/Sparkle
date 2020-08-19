@@ -15,34 +15,34 @@ type PostsUpdateResponse struct{}
 
 func (service PostsService) Update(params PostsUpdateRequest) (PostsUpdateResponse, error) {
 
-	var result PostsUpdateResponse
+	var response PostsUpdateResponse
 
 	if err := validator.Process(params); err != nil {
-		return result, errors.InvalidParams
+		return response, errors.InvalidParams
 	}
 
 	user, err := service.users.GetByAccessToken(params.Token)
 
 	if err != nil {
-		return result, errors.InternalError
+		return response, errors.InternalError
 	}
 
 	if !user.Exists() {
-		return result, errors.InvalidCredentials
+		return response, errors.InvalidCredentials
 	}
 
 	post, err := service.posts.GetById(params.Id)
 
 	if err != nil {
-		return result, errors.InternalError
+		return response, errors.InternalError
 	}
 
 	if !post.Exists() {
-		return result, errors.PostNotFound
+		return response, errors.PostNotFound
 	}
 
 	if !post.CreatedBy(user) {
-		return result, errors.ActionNotAllowed
+		return response, errors.ActionNotAllowed
 	}
 
 	post.Text = params.Text
@@ -50,9 +50,9 @@ func (service PostsService) Update(params PostsUpdateRequest) (PostsUpdateRespon
 	err = service.posts.Update(post)
 
 	if err != nil {
-		return result, errors.InternalError
+		return response, errors.InternalError
 	}
 
-	return result, nil
+	return response, nil
 
 }
