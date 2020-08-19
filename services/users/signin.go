@@ -16,15 +16,15 @@ type UsersSigninResponse struct {
 	Token string `json:"token"`
 }
 
-func (service UsersService) Signin(params UsersSigninRequest) (UsersSigninResponse, error) {
+func (service UsersService) Signin(request UsersSigninRequest) (UsersSigninResponse, error) {
 
 	var response UsersSigninResponse
 
-	if err := validator.Process(params); err != nil {
+	if err := validator.Process(request); err != nil {
 		return response, errors.InvalidParams
 	}
 
-	user, err := service.users.GetByUsername(params.Username)
+	user, err := service.users.GetByUsername(request.Username)
 
 	if err != nil {
 		return response, errors.InternalError
@@ -34,7 +34,7 @@ func (service UsersService) Signin(params UsersSigninRequest) (UsersSigninRespon
 		return response, errors.InvalidCredentials
 	}
 
-	if !passwords.CheckHash(params.Password, user.Password) {
+	if !passwords.CheckHash(request.Password, user.Password) {
 		return response, errors.InvalidCredentials
 	}
 

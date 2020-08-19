@@ -26,15 +26,15 @@ type LocationsListResponseLocation struct {
 	PostsNumber int     `json:"posts_number"`
 }
 
-func (service LocationsService) List(params LocationsListRequest) (LocationsListResponse, error) {
+func (service LocationsService) List(request LocationsListRequest) (LocationsListResponse, error) {
 
 	var response LocationsListResponse
 
-	if err := validator.Process(params); err != nil {
+	if err := validator.Process(request); err != nil {
 		return response, errors.InvalidParams
 	}
 
-	user, err := service.users.GetByAccessToken(params.Token)
+	user, err := service.users.GetByAccessToken(request.Token)
 
 	if err != nil {
 		return response, errors.InternalError
@@ -44,9 +44,9 @@ func (service LocationsService) List(params LocationsListRequest) (LocationsList
 		return response, errors.InvalidCredentials
 	}
 
-	parentLocationCode := geohash.CoordinatesToGeohash(params.Latitude, params.Longitude, geohash.GetParentLength(params.Zoom))
+	parentLocationCode := geohash.CoordinatesToGeohash(request.Latitude, request.Longitude, geohash.GetParentLength(request.Zoom))
 
-	childLocationCodeLength := geohash.GetDisplayableLength(params.Zoom)
+	childLocationCodeLength := geohash.GetDisplayableLength(request.Zoom)
 
 	createdAfter := time.Now().UTC().AddDate(0, 0, -1).Format(time.RFC3339)
 

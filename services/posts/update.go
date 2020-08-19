@@ -13,15 +13,15 @@ type PostsUpdateRequest struct {
 
 type PostsUpdateResponse struct{}
 
-func (service PostsService) Update(params PostsUpdateRequest) (PostsUpdateResponse, error) {
+func (service PostsService) Update(request PostsUpdateRequest) (PostsUpdateResponse, error) {
 
 	var response PostsUpdateResponse
 
-	if err := validator.Process(params); err != nil {
+	if err := validator.Process(request); err != nil {
 		return response, errors.InvalidParams
 	}
 
-	user, err := service.users.GetByAccessToken(params.Token)
+	user, err := service.users.GetByAccessToken(request.Token)
 
 	if err != nil {
 		return response, errors.InternalError
@@ -31,7 +31,7 @@ func (service PostsService) Update(params PostsUpdateRequest) (PostsUpdateRespon
 		return response, errors.InvalidCredentials
 	}
 
-	post, err := service.posts.GetById(params.Id)
+	post, err := service.posts.GetById(request.Id)
 
 	if err != nil {
 		return response, errors.InternalError
@@ -45,7 +45,7 @@ func (service PostsService) Update(params PostsUpdateRequest) (PostsUpdateRespon
 		return response, errors.ActionNotAllowed
 	}
 
-	post.Text = params.Text
+	post.Text = request.Text
 
 	err = service.posts.Update(post)
 

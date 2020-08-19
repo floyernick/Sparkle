@@ -13,15 +13,15 @@ type LikesCreateRequest struct {
 
 type LikesCreateResponse struct{}
 
-func (service LikesService) Create(params LikesCreateRequest) (LikesCreateResponse, error) {
+func (service LikesService) Create(request LikesCreateRequest) (LikesCreateResponse, error) {
 
 	var response LikesCreateResponse
 
-	if err := validator.Process(params); err != nil {
+	if err := validator.Process(request); err != nil {
 		return response, errors.InvalidParams
 	}
 
-	user, err := service.users.GetByAccessToken(params.Token)
+	user, err := service.users.GetByAccessToken(request.Token)
 
 	if err != nil {
 		return response, errors.InternalError
@@ -31,7 +31,7 @@ func (service LikesService) Create(params LikesCreateRequest) (LikesCreateRespon
 		return response, errors.InvalidCredentials
 	}
 
-	post, err := service.posts.GetById(params.PostId)
+	post, err := service.posts.GetById(request.PostId)
 
 	if err != nil {
 		return response, errors.InternalError

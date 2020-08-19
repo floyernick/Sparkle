@@ -18,15 +18,15 @@ type UsersSignupResponse struct {
 	Token string `json:"token"`
 }
 
-func (service UsersService) Signup(params UsersSignupRequest) (UsersSignupResponse, error) {
+func (service UsersService) Signup(request UsersSignupRequest) (UsersSignupResponse, error) {
 
 	var response UsersSignupResponse
 
-	if err := validator.Process(params); err != nil {
+	if err := validator.Process(request); err != nil {
 		return response, errors.InvalidParams
 	}
 
-	user, err := service.users.GetByUsername(params.Username)
+	user, err := service.users.GetByUsername(request.Username)
 
 	if err != nil {
 		return response, errors.InternalError
@@ -37,11 +37,11 @@ func (service UsersService) Signup(params UsersSignupRequest) (UsersSignupRespon
 	}
 
 	user = entities.User{
-		Username:    params.Username,
+		Username:    request.Username,
 		AccessToken: uuid.Generate(),
 	}
 
-	user.Password, err = passwords.GenerateHash(params.Password)
+	user.Password, err = passwords.GenerateHash(request.Password)
 
 	if err != nil {
 		return response, errors.InternalError

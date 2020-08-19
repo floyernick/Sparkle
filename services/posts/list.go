@@ -35,15 +35,15 @@ type PostsListResponsePostUser struct {
 	Username string `json:"username"`
 }
 
-func (service PostsService) List(params PostsListRequest) (PostsListResponse, error) {
+func (service PostsService) List(request PostsListRequest) (PostsListResponse, error) {
 
 	var response PostsListResponse
 
-	if err := validator.Process(params); err != nil {
+	if err := validator.Process(request); err != nil {
 		return response, errors.InvalidParams
 	}
 
-	user, err := service.users.GetByAccessToken(params.Token)
+	user, err := service.users.GetByAccessToken(request.Token)
 
 	if err != nil {
 		return response, errors.InternalError
@@ -53,7 +53,7 @@ func (service PostsService) List(params PostsListRequest) (PostsListResponse, er
 		return response, errors.InvalidCredentials
 	}
 
-	locationCode := geohash.CoordinatesToGeohash(params.Latitude, params.Longitude, geohash.GetClickableLength(params.Zoom))
+	locationCode := geohash.CoordinatesToGeohash(request.Latitude, request.Longitude, geohash.GetClickableLength(request.Zoom))
 
 	createdAfter := time.Now().UTC().AddDate(0, 0, -1).Format(time.RFC3339)
 
@@ -61,8 +61,8 @@ func (service PostsService) List(params PostsListRequest) (PostsListResponse, er
 		LocationCodeStartsWith: locationCode,
 		CreatedAfter:           createdAfter,
 		OrderByCreatedAtDesc:   true,
-		Offset:                 params.Offset,
-		Limit:                  params.Limit,
+		Offset:                 request.Offset,
+		Limit:                  request.Limit,
 	})
 
 	if err != nil {

@@ -12,15 +12,15 @@ type LikesDeleteRequest struct {
 
 type LikesDeleteResponse struct{}
 
-func (service LikesService) Delete(params LikesDeleteRequest) (LikesDeleteResponse, error) {
+func (service LikesService) Delete(request LikesDeleteRequest) (LikesDeleteResponse, error) {
 
 	var response LikesDeleteResponse
 
-	if err := validator.Process(params); err != nil {
+	if err := validator.Process(request); err != nil {
 		return response, errors.InvalidParams
 	}
 
-	user, err := service.users.GetByAccessToken(params.Token)
+	user, err := service.users.GetByAccessToken(request.Token)
 
 	if err != nil {
 		return response, errors.InternalError
@@ -30,7 +30,7 @@ func (service LikesService) Delete(params LikesDeleteRequest) (LikesDeleteRespon
 		return response, errors.InvalidCredentials
 	}
 
-	post, err := service.posts.GetById(params.PostId)
+	post, err := service.posts.GetById(request.PostId)
 
 	if err != nil {
 		return response, errors.InternalError

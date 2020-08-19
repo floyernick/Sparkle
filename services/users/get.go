@@ -30,15 +30,15 @@ type UsersGetResponsePost struct {
 	LikesNumber  int    `json:"likes_number"`
 }
 
-func (service UsersService) Get(params UsersGetRequest) (UsersGetResponse, error) {
+func (service UsersService) Get(request UsersGetRequest) (UsersGetResponse, error) {
 
 	var response UsersGetResponse
 
-	if err := validator.Process(params); err != nil {
+	if err := validator.Process(request); err != nil {
 		return response, errors.InvalidParams
 	}
 
-	user, err := service.users.GetByAccessToken(params.Token)
+	user, err := service.users.GetByAccessToken(request.Token)
 
 	if err != nil {
 		return response, errors.InternalError
@@ -48,7 +48,7 @@ func (service UsersService) Get(params UsersGetRequest) (UsersGetResponse, error
 		return response, errors.InvalidCredentials
 	}
 
-	requestedUser, err := service.users.GetById(params.Id)
+	requestedUser, err := service.users.GetById(request.Id)
 
 	if err != nil {
 		return response, errors.InternalError

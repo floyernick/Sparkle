@@ -19,15 +19,15 @@ type PostsCreateResponse struct {
 	Id int `json:"id"`
 }
 
-func (service PostsService) Create(params PostsCreateRequest) (PostsCreateResponse, error) {
+func (service PostsService) Create(request PostsCreateRequest) (PostsCreateResponse, error) {
 
 	var response PostsCreateResponse
 
-	if err := validator.Process(params); err != nil {
+	if err := validator.Process(request); err != nil {
 		return response, errors.InvalidParams
 	}
 
-	user, err := service.users.GetByAccessToken(params.Token)
+	user, err := service.users.GetByAccessToken(request.Token)
 
 	if err != nil {
 		return response, errors.InternalError
@@ -39,8 +39,8 @@ func (service PostsService) Create(params PostsCreateRequest) (PostsCreateRespon
 
 	post := entities.Post{
 		UserId:       user.Id,
-		Text:         params.Text,
-		LocationCode: geohash.CoordinatesToGeohash(params.Latitude, params.Longitude, geohash.MAX_LENGTH),
+		Text:         request.Text,
+		LocationCode: geohash.CoordinatesToGeohash(request.Latitude, request.Longitude, geohash.MAX_LENGTH),
 		CreatedAt:    time.Now().UTC().Format(time.RFC3339),
 	}
 
